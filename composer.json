@@ -1,6 +1,6 @@
 {
-    "name": "jasonmccallister/hasura",
-    "description": "Use your Craft CMS credentials to authenticate with a GraphQL powered by Hasura",
+    "name": "jasonmccallister/craft-hasura",
+    "description": "Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io",
     "type": "craft-plugin",
     "version": "1.0.0",
     "keywords": [
@@ -11,8 +11,8 @@
         "hasura"
     ],
     "support": {
-        "docs": "https://github.com/jasonmccallister/hasura/blob/master/README.md",
-        "issues": "https://github.com/jasonmccallister/hasura/issues"
+        "docs": "https://github.com/jasonmccallister/craft-hasura/blob/master/README.md",
+        "issues": "https://github.com/jasonmccallister/craft-hasura/issues"
     },
     "license": "MIT",
     "authors": [

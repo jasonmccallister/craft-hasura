@@ -2,7 +2,7 @@
 /**
  * Hasura plugin for Craft CMS 3.x
  *
- * Use your Craft CMS credentials to authenticate with a GraphQL powered by Hasura
+ * Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
  *
  * @link      https://mccallister.io
  * @copyright Copyright (c) 2019 Jason McCallister
@@ -16,15 +16,6 @@ use Craft;
 use craft\base\Model;
 
 /**
- * Hasura Settings Model
- *
- * This is a model used to define the plugin's settings.
- *
- * Models are containers for data. Just about every time information is passed
- * between services, controllers, and templates in Craft, it’s passed via a model.
- *
- * https://craftcms.com/docs/plugins/models
- *
  * @author    Jason McCallister
  * @package   Hasura
  * @since     1.0.0

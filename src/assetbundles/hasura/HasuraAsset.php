@@ -2,7 +2,7 @@
 /**
  * Hasura plugin for Craft CMS 3.x
  *
- * Use your Craft CMS credentials to authenticate with a GraphQL powered by Hasura
+ * Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
  *
  * @link      https://mccallister.io
  * @copyright Copyright (c) 2019 Jason McCallister
@@ -15,19 +15,6 @@ use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
 /**
- * HasuraAsset AssetBundle
- *
- * AssetBundle represents a collection of asset files, such as CSS, JS, images.
- *
- * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
- * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
- * of the class representing it.
- *
- * An asset bundle can depend on other asset bundles. When registering an asset bundle
- * with a view, all its dependent asset bundles will be automatically registered.
- *
- * http://www.yiiframework.com/doc-2.0/guide-structure-assets.html
- *
  * @author    Jason McCallister
  * @package   Hasura
  * @since     1.0.0

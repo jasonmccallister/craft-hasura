@@ -1,6 +1,6 @@
 # Hasura plugin for Craft CMS 3.x
 
-Use your Craft CMS credentials to authenticate with a GraphQL powered by Hasura
+Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
 
 ![Screenshot](resources/img/plugin-logo.png)
 
