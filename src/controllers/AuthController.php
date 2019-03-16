@@ -59,7 +59,23 @@ class AuthController extends Controller
      */
     public function actionIndex()
     {
-        $result = 'Welcome to the AuthController actionIndex() method';
+        // make sure its post
+        if (!Craft::$app->getRequest()->getIsPost()) {
+            return null;
+        }
+
+        $loginName = Craft::$app->getRequest()->getRequiredBodyParam('loginName');
+        $password = Craft::$app->getRequest()->getRequiredBodyParam('password');
+
+        $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($loginName);
+
+        if (!$user->authenticate($password)) {
+            return null;
+        }
+
+        if (!Craft::$app->getUser()->login($user, 1)) {
+            return null;
+        }
 
         return $result;
     }
