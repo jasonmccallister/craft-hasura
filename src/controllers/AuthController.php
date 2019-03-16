@@ -61,6 +61,7 @@ class AuthController extends Controller
     {
         // make sure its post
         if (!Craft::$app->getRequest()->getIsPost()) {
+            // TODO make this return a useful JSON response
             return null;
         }
 
@@ -70,13 +71,16 @@ class AuthController extends Controller
         $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($loginName);
 
         if (!$user->authenticate($password)) {
+            // TODO make this return a useful JSON response
             return null;
         }
 
         if (!Craft::$app->getUser()->login($user, 1)) {
+            // TODO make this return a useful JSON response
             return null;
         }
 
+        // TODO remove this example code from JWT into a config or env var
         $privateKey = <<<EOD
 -----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQC8kGa1pSjbSYZVebtTRBLxBz5H4i2p/llLCrEeQhta5kaQu/Rn
