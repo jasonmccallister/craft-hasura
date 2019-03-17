@@ -59,10 +59,12 @@ class AuthController extends Controller
      */
     public function actionIndex()
     {
+        // TODO disable CSRF for this request
+
         // make sure its post
         if (!Craft::$app->getRequest()->getIsPost()) {
             // TODO make this return a useful JSON response
-            return null;
+            return $this->asErrorJson('You must send a POST request');
         }
 
         $loginName = Craft::$app->getRequest()->getRequiredBodyParam('loginName');
@@ -72,12 +74,12 @@ class AuthController extends Controller
 
         if (!$user->authenticate($password)) {
             // TODO make this return a useful JSON response
-            return null;
+            return $this->asErrorJson('Unable to authenticate the user');
         }
 
         if (!Craft::$app->getUser()->login($user, 1)) {
             // TODO make this return a useful JSON response
-            return null;
+            return $this->asErrorJson('Unable to authenticate the user');
         }
 
         // TODO remove this example code from JWT into a config or env var
@@ -100,17 +102,19 @@ B2zNzvrlgRmgBrklMTrMYgm1NPcW+bRLGcwgW2PTvNM=
 EOD;
 
         $token = [
-            'sub' => '$user->id', // TODO make this pull the users id
-            'admin' => false, // TODO make this use the actual function to check if user is an admin
-            'iat' => 1356999524, // TODO make this get the current time
+            'sub' => $user->uid,
+            'admin' => $user->admin ?? false,
+            'iat' => time(),
             'https://hasura.io/jwt/claims' => [ // TODO make this a configuration from hasura config `claims_namespace`
                 'x-hasura-allowed-roles' => ['editor', 'user', 'mod'], // TODO make this grab the kabob version of the users groups
                 'x-hasura-default-role' => 'user', // TODO grab the users first group? Maybe make this a configuration option to select the default group?
-                'x-hasura-user-id' => '$user->id', // TODO grab the users ID
+                'x-hasura-user-id' => $user->uid,
                 'x-hasura-org-id' => '123' // TODO support additional claims, possibly by grabbing the attributes on the users fields?
             ]
         ];
 
-        return JWT::encode($token, $privateKey, 'RS256');
+        $encoded = JWT::encode($token, $privateKey, 'RS256');
+
+        return $this->asJson(['token' => $encoded]);
     }
 }
