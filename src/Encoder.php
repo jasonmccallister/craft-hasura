@@ -47,34 +47,39 @@ EOD;
      */
     public static function encode(User $user, int $duration) : string
     {
-        $roles = $user->groups;
-        if (!$roles) {
-            $roles = ['user'];
-        }
+        $roles = self::getUserRoles($user);
 
-        if ($user->admin) {
-            $defaultRole = 'admin';
-        } else {
-            $defaultRole = 'user';
-        }
+        $default = $user->admin ? 'admin' : 'user';
 
         $iat = time();
         $exp = $iat + $duration;
 
-        $claimsNamespace = 'https://hasura.io/jwt/claims';
+        $namespace = 'https://hasura.io/jwt/claims';
 
         $token = [
             'sub' => $user->uid,
             'admin' => $user->admin ?? false,
             'iat' => $iat,
             'exp' => $exp,
-            $claimsNamespace => [
+            $namespace => [
                 'x-hasura-allowed-roles' => $roles,
-                'x-hasura-default-role' => $defaultRole,
+                'x-hasura-default-role' => $default,
                 'x-hasura-user-id' => $user->uid,
             ]
         ];
 
         return JWT::encode($token, self::$privateKey, 'RS256');
+    }
+
+    /**
+     * Get all of the users roles by their group handle.
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    protected static function getUserRoles(User $user): array
+    {
+        return $user->groups ? array_column($user->groups, 'handle') : ['user'];
     }
 }
