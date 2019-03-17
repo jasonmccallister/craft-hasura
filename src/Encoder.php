@@ -80,6 +80,12 @@ EOD;
      */
     protected static function getUserRoles(User $user): array
     {
-        return $user->groups ? array_column($user->groups, 'handle') : ['user'];
+        $roles = $user->groups ? array_column($user->groups, 'handle') : ['user'];
+
+        if ($user->admin) {
+            return array_merge($roles, ['admin']);
+        }
+
+        return $roles;
     }
 }
