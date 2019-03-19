@@ -2,7 +2,7 @@
 
 Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
 
-![Screenshot](resources/img/plugin-logo.png)
+![Hasura Logo](resources/img/plugin-logo.png)
 
 ## Requirements
 
