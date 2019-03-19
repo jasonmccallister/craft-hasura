@@ -17,10 +17,71 @@
 
 {% do view.registerAssetBundle("jasonmccallister\\hasura\\assetbundles\\hasura\\HasuraAsset") %}
 
+{% set signingMethodOptions = {
+    HS256: 'HS256',
+    HS384: 'HS384',
+    HS512: 'HS512',
+    RS256: 'RS256',
+    RS384: 'RS384',
+    RS512: 'RS512'
+} %}
+
+<h2>General Settings</h2>
+<p style="color: rgb(143, 152, 163); padding-left: 20px">These settings you should change. However, we are setting some sensible defaults to reduce configuration.</p>
+
 {{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
+    label: 'Default Role',
+    instructions: 'The default role that should be assigned when signing tokens.',
+    id: 'defaultRole',
+    name: 'defaultRole',
+    value: settings['defaultRole']})
+}}
+
+{{ forms.checkboxField({
+    label: 'Require CSRF Tokens',
+    instructions: 'If you are going to use Craft to host the site (e.g. the forms will be submitted with the CSRF token). If you are going to allow other applications to generate JWTs you must diable this as those applications do not have access to the CSRF token.',
+    id: 'requireCsrfToken',
+    name: 'requireCsrfToken',
+    checked: settings['requireCsrfToken'],
+    value: settings['requireCsrfToken'] ? 'on' : 'off'})
+}}
+
+<hr>
+
+<h2>JSON Web Token (JWT) Settings</h2>
+<p style="color: rgb(143, 152, 163); padding-left: 20px">By default, the HMAC is selected to sign the JWT.</p>
+
+{{ forms.selectField({
+    label: "Signing Method",
+    instructions: "Select the signing method used to ",
+    id: 'signingMethod',
+    name: 'signingMethod',
+    value: settings.signingMethod,
+    options: signingMethodOptions
+}) }}
+
+<hr>
+
+<h2>Webhook Settings</h2>
+<p style="color: rgb(143, 152, 163); padding-left: 20px">Craft can also be configured to receive incoming webhoooks from Hasura, this will fire an event within Craft for your plugin to listen to and take actions.</p>
+
+{{ forms.textField({
+    label: "Key",
+    instructions: "Set a randomly generated key to allow incoming webhooks from Hasura. The plugin will look for the header `X-API-Key` with this value.",
+    id: 'webhookKey',
+    name: 'webhookKey',
+    value: settings.webhookKey,
+}) }}
+
+<hr>
+
+<h2>Additional Settings</h2>
+<p style="color: rgb(143, 152, 163); padding-left: 20px">These settings you whould not have to change, but are provided in the event you need to customize the JWT further. These are defaults to what Hasura GraphQL Engine expects.</p>
+
+{{ forms.textField({
+    label: 'Claims Namespace',
+    instructions: 'The claims namespace that should be assigned when signing tokens.',
+    id: 'claimsNamespace',
+    name: 'claimsNamespace',
+    value: settings['claimsNamespace']})
 }}

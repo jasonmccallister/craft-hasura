@@ -26,30 +26,37 @@ class Settings extends Model
     // =========================================================================
 
     /**
-     * Some field model attribute
+     * default role model attribute
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
-
-    // Public Methods
-    // =========================================================================
+    public $defaultRole = 'user';
 
     /**
-     * Returns the validation rules for attributes.
+     * claims namespace model attribute
      *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
-     * @return array
+     * @var string
      */
-    public function rules()
-    {
-        return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
-        ];
-    }
+    public $claimsNamespace = 'https://hasura.io/jwt/claims';
+
+    /**
+     * require CSRF token model attribute
+     *
+     * @var boolean
+     */
+    public $requireCsrfToken = false;
+
+    /**
+     * signing method used for JWT token model attribute
+     *
+     * @var string
+     */
+    public $signingMethod = 'HS256';
+
+    /**
+     * header key for the incoming webhook model attribute
+     *
+     * @var string
+     */
+    public $webhookKey = '';
 }

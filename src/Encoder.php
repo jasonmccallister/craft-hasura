@@ -48,13 +48,14 @@ EOD;
     public static function encode(User $user, int $duration) : string
     {
         $roles = self::getUserRoles($user);
+        $settings = Hasura::$plugin->getSettings();
+        $defaultRole = $settings->defaultRole;
+        $namespace = $settings->claimsNamespace;
 
-        $default = $user->admin ? 'admin' : 'user';
+        $default = $user->admin ? 'admin' : $defaultRole;
 
         $iat = time();
         $exp = $iat + $duration;
-
-        $namespace = 'https://hasura.io/jwt/claims';
 
         $token = [
             'sub' => $user->uid,
@@ -80,7 +81,10 @@ EOD;
      */
     protected static function getUserRoles(User $user): array
     {
-        $roles = $user->groups ? array_column($user->groups, 'handle') : ['user'];
+        $roles = $user->groups ? array_column(
+            $user->groups,
+            'handle'
+        ) : [Hasura::$plugin->getSettings()->defaultRole];
 
         if ($user->admin) {
             return array_merge($roles, ['admin']);

@@ -57,7 +57,7 @@ class AuthController extends Controller
     {
         // Don't enable CSRF validation for auth requests
         if ($action->id === 'index') {
-            $this->enableCsrfValidation = false;
+            $this->enableCsrfValidation = \jasonmccallister\hasura\Hasura::$plugin->getSettings()->requireCsrfToken;
         }
 
         return parent::beforeAction($action);
