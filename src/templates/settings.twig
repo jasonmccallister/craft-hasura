@@ -60,17 +60,12 @@
     options: signingMethodOptions
 }) }}
 
-<hr>
-
-<h2>Webhook Settings</h2>
-<p style="color: rgb(143, 152, 163); padding-left: 20px">Craft can also be configured to receive incoming webhoooks from Hasura, this will fire an event within Craft for your plugin to listen to and take actions.</p>
-
-{{ forms.textField({
-    label: "Key",
-    instructions: "Set a randomly generated key to allow incoming webhooks from Hasura. The plugin will look for the header `X-API-Key` with this value.",
-    id: 'webhookKey',
-    name: 'webhookKey',
-    value: settings.webhookKey,
+{{ forms.selectField({
+    label: "Signing Key",
+    instructions: "Enter the key used to sign JWTs. If you selected RS* as the signing method this would be the private key.",
+    id: 'signingKey',
+    name: 'signingKey',
+    value: settings.signingKey,
 }) }}
 
 <hr>

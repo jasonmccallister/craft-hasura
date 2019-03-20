@@ -47,16 +47,16 @@ class Settings extends Model
     public $requireCsrfToken = false;
 
     /**
-     * signing method used for JWT token model attribute
+     * signing method used for JWT model attribute
      *
      * @var string
      */
     public $signingMethod = 'HS256';
 
     /**
-     * header key for the incoming webhook model attribute
+     * signing key used for JWT model attribute
      *
      * @var string
      */
-    public $webhookKey = '';
+    public $signingKey = null;
 }
