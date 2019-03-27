@@ -1,11 +1,4 @@
-/**
- * Hasura plugin for Craft CMS
- *
- * Hasura CSS
- *
- * @author    Jason McCallister
- * @copyright Copyright (c) 2019 Jason McCallister
- * @link      https://mccallister.io
- * @package   Hasura
- * @since     1.0.0
- */
+ p.note {
+    color: rgb(143, 152, 163);
+    padding-left: 20px;
+ }

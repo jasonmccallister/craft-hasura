@@ -27,7 +27,7 @@
 } %}
 
 <h2>General Settings</h2>
-<p style="color: rgb(143, 152, 163); padding-left: 20px">These settings you should change. However, we are setting some sensible defaults to reduce configuration.</p>
+<p class="note">These settings you should change. However, we are setting some sensible defaults to reduce configuration.</p>
 
 {{ forms.textField({
     label: 'Default Role',
@@ -39,7 +39,7 @@
 
 {{ forms.checkboxField({
     label: 'Require CSRF Tokens',
-    instructions: 'If you are going to use Craft to host the site (e.g. the forms will be submitted with the CSRF token). If you are going to allow other applications to generate JWTs you must diable this as those applications do not have access to the CSRF token.',
+    instructions: 'If you are going to use Craft to host the site (e.g. the forms will be submitted with the CSRF token). If you are going to allow other applications to generate JWTs, you must diable this as those applications do not have access to the CSRF token.',
     id: 'requireCsrfToken',
     name: 'requireCsrfToken',
     checked: settings['requireCsrfToken'],
@@ -49,18 +49,18 @@
 <hr>
 
 <h2>JSON Web Token (JWT) Settings</h2>
-<p style="color: rgb(143, 152, 163); padding-left: 20px">By default, the HMAC is selected to sign the JWT.</p>
+<p class="note">By default, HMAC is selected to sign the JWT.</p>
 
 {{ forms.selectField({
     label: "Signing Method",
-    instructions: "Select the signing method used to ",
+    instructions: "Select the signing method used to sign the JWT",
     id: 'signingMethod',
     name: 'signingMethod',
     value: settings.signingMethod,
     options: signingMethodOptions
 }) }}
 
-{{ forms.selectField({
+{{ forms.textField({
     label: "Signing Key",
     instructions: "Enter the key used to sign JWTs. If you selected RS* as the signing method this would be the private key.",
     id: 'signingKey',
@@ -71,7 +71,7 @@
 <hr>
 
 <h2>Additional Settings</h2>
-<p style="color: rgb(143, 152, 163); padding-left: 20px">These settings you whould not have to change, but are provided in the event you need to customize the JWT further. These are defaults to what Hasura GraphQL Engine expects.</p>
+<p class="note">These settings you whould not have to change, but are provided in the event you need to customize the JWT further. These are defaults to what Hasura GraphQL Engine expects.</p>
 
 {{ forms.textField({
     label: 'Claims Namespace',
