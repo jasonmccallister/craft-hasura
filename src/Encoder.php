@@ -13,7 +13,8 @@ namespace jasonmccallister\hasura;
 use Firebase\JWT\JWT;
 use craft\elements\User;
 
-class Encoder {
+class Encoder
+{
     /**
      * Takes a user and returns a signed JWT
      *
@@ -22,7 +23,7 @@ class Encoder {
      *
      * @return string
      */
-    public static function encode(User $user, int $duration) : string
+    public static function encode(User $user, int $duration): string
     {
         $roles = self::getUserRoles($user);
         $settings = Hasura::$plugin->getSettings();
