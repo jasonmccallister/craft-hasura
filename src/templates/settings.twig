@@ -78,6 +78,14 @@ General Settings
 </p>
 
 {{ forms.textField({
+    label: 'Webhook Header',
+    instructions: 'The header that will contain the webhook key',
+    id: 'webhookHeader',
+    name: 'webhookHeader',
+    value: settings['webhookHeader']})
+}}
+
+{{ forms.textField({
     label: 'Webhook Key',
     instructions: 'The key used to validate incoming requests to /hasura/webhook',
     id: 'webhookKey',

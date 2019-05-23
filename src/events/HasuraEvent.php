@@ -11,14 +11,14 @@ class HasuraEvent extends Event
      *
      * @var String
      */
-    public $triggerName;
+    public $trigger;
 
     /**
      * The name of the table
      *
      * @var String
      */
-    public $tableName;
+    public $table;
 
     /**
      * The payload object as a whole.

@@ -36,7 +36,6 @@ use jasonmccallister\hasura\Encoder;
  */
 class AuthController extends Controller
 {
-
     // Protected Properties
     // =========================================================================
 

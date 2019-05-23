@@ -71,12 +71,19 @@ class WebhookController extends Controller
     public function actionIndex()
     {
         $this->requirePostRequest();
+        $request = Craft::$app->getRequest();
+        $settings = \jasonmccallister\hasura\Hasura::$plugin->getSettings();
 
-        $payload = json_decode(Craft::$app->getRequest()->rawBody, true);
+        if ($request->getHeaders()->get('x-api-key') !== $settings->webhookKey) {
+            Craft::$app->getResponse()->setStatusCode(400);
+            return $this->asErrorJson('Unable to authenticate with the webhook');
+        }
 
-        $this->trigger('hasuraEvent', new HasuraEvent([
-            'triggerName' => $payload['trigger']['name'],
-            'tableName' => $payload['table']['name'],
+        $payload = json_decode($request->rawBody, true);
+
+        $this->trigger('hasuraEventTrigger', new HasuraEvent([
+            'trigger' => $payload['trigger']['name'],
+            'table' => $payload['table']['name'],
             'payload' => $payload,
         ]));
 

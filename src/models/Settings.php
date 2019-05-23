@@ -61,6 +61,13 @@ class Settings extends Model
     public $signingKey = null;
 
     /**
+     * The header that will contain the webhook key
+     *
+     * @var string
+     */
+    public $webhookHeader = 'x-api-key';
+
+    /**
      * The key used to allow posts to the webhook endpoint
      *
      * @var string
