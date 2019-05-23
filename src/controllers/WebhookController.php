@@ -15,7 +15,7 @@ use craft\web\Controller;
 use jasonmccallister\hasura\Encoder;
 
 /**
- * Auth Controller
+ * Webhook Controller
  *
  * Generally speaking, controllers are the middlemen between the front end of
  * the CP/website and your plugin’s services. They contain action methods which
