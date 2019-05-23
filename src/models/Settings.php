@@ -59,4 +59,11 @@ class Settings extends Model
      * @var string
      */
     public $signingKey = null;
+
+    /**
+     * The key used to allow posts to the webhook endpoint
+     *
+     * @var string
+     */
+    public $webhookKey = null;
 }

@@ -77,15 +77,7 @@ class Hasura extends Plugin
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['hasura/auth'] = 'hasura/auth';
-            }
-        );
-
-        // Register our CP routes
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'hasura/auth/do-something';
+                $event->rules['hasura/webhook'] = 'hasura/webhook';
             }
         );
 
