@@ -12,10 +12,10 @@ namespace jasonmccallister\hasura\controllers;
 
 use Craft;
 use craft\web\Controller;
-use jasonmccallister\hasura\Encoder;
+use jasonmccallister\hasura\events\HasuraEvent;
 
 /**
- * Auth Controller
+ * Webhook Controller
  *
  * Generally speaking, controllers are the middlemen between the front end of
  * the CP/website and your plugin’s services. They contain action methods which
@@ -32,9 +32,9 @@ use jasonmccallister\hasura\Encoder;
  *
  * @author    Jason McCallister
  * @package   Hasura
- * @since     1.0.0
+ * @since     1.1.0
  */
-class AuthController extends Controller
+class WebhookController extends Controller
 {
     // Protected Properties
     // =========================================================================
@@ -56,7 +56,7 @@ class AuthController extends Controller
     {
         // Don't enable CSRF validation for auth requests
         if ($action->id === 'index') {
-            $this->enableCsrfValidation = \jasonmccallister\hasura\Hasura::$plugin->getSettings()->requireCsrfToken;
+            $this->enableCsrfValidation = false;
         }
 
         return parent::beforeAction($action);
@@ -64,26 +64,29 @@ class AuthController extends Controller
 
     /**
      * Handle a request going to our plugin's index action URL,
-     * e.g.: actions/hasura/auth
+     * e.g.: actions/hasura/webhook
      *
      * @return mixed
      */
     public function actionIndex()
     {
         $this->requirePostRequest();
+        $request = Craft::$app->getRequest();
+        $settings = \jasonmccallister\hasura\Hasura::$plugin->getSettings();
 
-        $loginName = Craft::$app->getRequest()->getRequiredBodyParam('loginName');
-        $password = Craft::$app->getRequest()->getRequiredBodyParam('password');
-        $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($loginName);
-
-        if (!$user->authenticate($password)) {
-            return $this->asErrorJson('Unable to authenticate the user');
+        if ($request->getHeaders()->get('x-api-key') !== $settings->webhookKey) {
+            Craft::$app->getResponse()->setStatusCode(400);
+            return $this->asErrorJson('Unable to authenticate with the webhook');
         }
 
-        $generalConfig = Craft::$app->getConfig()->getGeneral();
+        $payload = json_decode($request->rawBody, true);
 
-        $token = Encoder::encode($user, $generalConfig->userSessionDuration);
+        $this->trigger('hasuraEventTrigger', new HasuraEvent([
+            'trigger' => $payload['trigger']['name'],
+            'table' => $payload['table']['name'],
+            'payload' => $payload,
+        ]));
 
-        return $this->asJson(['token' => $token]);
+        return $this->asJson(['success' => 'event trigger ' . $payload['id'] . ' received']);
     }
 }

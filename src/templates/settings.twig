@@ -12,11 +12,8 @@
  * @since     1.0.0
  */
 #}
-
 {% import "_includes/forms" as forms %}
-
 {% do view.registerAssetBundle("jasonmccallister\\hasura\\assetbundles\\hasura\\HasuraAsset") %}
-
 {% set signingMethodOptions = {
     HS256: 'HS256',
     HS384: 'HS384',
@@ -25,9 +22,10 @@
     RS384: 'RS384',
     RS512: 'RS512'
 } %}
-
-<h2>General Settings</h2>
-<p class="note">These settings you should change. However, we are setting some sensible defaults to reduce configuration.</p>
+    <h2>
+General Settings
+</h2>
+    <p class="note"> These settings you should change. However, we are setting some sensible defaults to reduce configuration.</p>
 
 {{ forms.textField({
     label: 'Default Role',
@@ -68,6 +66,32 @@
     rows: 15,
     value: settings.signingKey,
 }) }}
+
+<hr>
+
+<h2>Webhook Settings</h2>
+<p class="note">
+    You can configure the Hasura API to send event triggers to your Craft installation. This is useful when you need to perform specific events based on table. This will fire a
+    <em>HasuraEvent</em>
+    within the CMS. The payload is defined in the
+    <a href="https://docs.hasura.io/1.0/graphql/manual/event-triggers/payload.html">Hasura docs</a>.
+</p>
+
+{{ forms.textField({
+    label: 'Webhook Header',
+    instructions: 'The header that will contain the webhook key',
+    id: 'webhookHeader',
+    name: 'webhookHeader',
+    value: settings['webhookHeader']})
+}}
+
+{{ forms.textField({
+    label: 'Webhook Key',
+    instructions: 'The key used to validate incoming requests to /hasura/webhook',
+    id: 'webhookKey',
+    name: 'webhookKey',
+    value: settings['webhookKey']})
+}}
 
 <hr>
 
