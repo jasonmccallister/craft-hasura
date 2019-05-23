@@ -12,15 +12,15 @@ This plugin requires Craft CMS 3.0.0-beta.23 or later.
 
 To install the plugin, follow these instructions.
 
-1. Open your terminal and go to your Craft project:
+1.  Open your terminal and go to your Craft project:
 
         cd /path/to/project
 
-2. Then tell Composer to load the plugin:
+2.  Then tell Composer to load the plugin:
 
         composer require jasonmccallister/hasura
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Hasura.
+3.  In the Control Panel, go to Settings → Plugins and click the “Install” button for Hasura.
 
 ## Hasura Overview
 
@@ -52,13 +52,14 @@ After installation, you need to set a few items in the plugins settings:
 2. Set the signing method on the JWT that the Hasura API expects (RS256 or etc)
 3. Enter the key (string or private token)
 
-## Using Hasura
+## Using Craft CMS as Authentication for Hasura
 
 Users will authenticate with their username (or email if Craft is configured for email) and password to
 
 `https://yourdomain.com/hasura/auth`
 
 ### Example Response
+
 ```json
 {
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwNGZjNDM5Mi0wMmNlLTQ3MTgtYmQ5My03ODhjMWI1ZTU1ZjQiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTUzMDc5MjY5LCJleHAiOjE1NTMwODI4NjksImh0dHBzOlwvXC9oYXN1cmEuaW9cL2p3dFwvY2xhaW1zIjp7IngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsidXNlciIsImFkbWluIl0sIngtaGFzdXJhLWRlZmF1bHQtcm9sZSI6ImFkbWluIiwieC1oYXN1cmEtdXNlci1pZCI6IjA0ZmM0MzkyLTAyY2UtNDcxOC1iZDkzLTc4OGMxYjVlNTVmNCJ9fQ.WEAFZYon5arnCTN9ecAEiG4dKl-jkyk3em8EpJ9N0Vs"
@@ -66,6 +67,7 @@ Users will authenticate with their username (or email if Craft is configured for
 ```
 
 ### Example JWT
+
 ```json
 {
   "sub": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
@@ -73,22 +75,25 @@ Users will authenticate with their username (or email if Craft is configured for
   "iat": 1553079269,
   "exp": 1553082869,
   "https://hasura.io/jwt/claims": {
-    "x-hasura-allowed-roles": [
-      "user",
-      "admin"
-    ],
+    "x-hasura-allowed-roles": ["user", "admin"],
     "x-hasura-default-role": "admin",
     "x-hasura-user-id": "04fc4392-02ce-4718-bd93-788c1b5e55f4"
   }
 }
 ```
 
-## Hasura Roadmap
+## Configuring Craft CMS to Handle Event Trigger Webhooks from Hasura
 
-Some things to do, and ideas for potential features:
+Hasura allows you to tie events to table actions like insert, update, and delete. These are known as [Event Triggers](https://hasura.io/event-triggers). This plugin allows you to receive those event triggers by configuring Hasura to send to your Craft CMS.
 
-* Release it
-* Add support for handling incoming webhooks
-* Consider supporting project config, but most likely not as the keys should be different between environments
+`https://yourdomain.com/hasura/webhook`
+
+You can configure the header that Hasura will send in the plugin settings as well as a key. When the event trigger payload is received, the plugin will fire the `hasuraEventTrigger` event and allow you to listen for the event and take action.
+
+The event contains the following:
+
+- table: The name of the table the event came from (e.g. `todos`)
+- trigger: The name of the trigger (e.g. `send_updated_todo_to_craft`)
+- payload: The payload of the event, which is [contains the new and old data](https://docs.hasura.io/1.0/graphql/manual/event-triggers/payload.html#json-payload) (based on the trigger type)
 
 Brought to you by [Jason McCallister](https://mccallister.io)
