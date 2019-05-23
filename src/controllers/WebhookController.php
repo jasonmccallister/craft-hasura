@@ -13,6 +13,8 @@ namespace jasonmccallister\hasura\controllers;
 use Craft;
 use craft\web\Controller;
 use jasonmccallister\hasura\Encoder;
+use jasonmccallister\hasura\events\HasuraEvent;
+use function GuzzleHttp\json_decode;
 
 /**
  * Webhook Controller
@@ -72,8 +74,14 @@ class WebhookController extends Controller
     {
         $this->requirePostRequest();
 
-        // check the key, if configured
+        $payload = json_decode(Craft::$app->getRequest()->rawBody, true);
 
-        return $this->asJson(['message' => 'webhook received']);
+        $this->trigger('hasuraEvent', new HasuraEvent([
+            'triggerName' => $payload['trigger']['name'],
+            'tableName' => $payload['table']['name'],
+            'payload' => $payload,
+        ]));
+
+        return $this->asJson(['success' => 'event trigger ' . $payload['id'] . ' received']);
     }
 }

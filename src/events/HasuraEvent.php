@@ -6,13 +6,24 @@ use yii\base\Event as BaseEvent;
 
 class HasuraEvent extends BaseEvent
 {
-    public $id;
+    /**
+     * The name of the trigger
+     *
+     * @var String
+     */
+    public $triggerName;
 
-    public $event;
+    /**
+     * The name of the table
+     *
+     * @var String
+     */
+    public $tableName;
 
-    public $createdAt;
-
-    public $trigger;
-
-    public $table;
+    /**
+     * The payload object as a whole.
+     *
+     * @var Object
+     */
+    public $payload;
 }
