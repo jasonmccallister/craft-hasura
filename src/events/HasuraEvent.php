@@ -2,9 +2,9 @@
 
 namespace jasonmccallister\hasura\events;
 
-use yii\base\Event as BaseEvent;
+use yii\base\Event;
 
-class HasuraEvent extends BaseEvent
+class HasuraEvent extends Event
 {
     /**
      * The name of the trigger

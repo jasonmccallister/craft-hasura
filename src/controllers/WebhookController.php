@@ -12,9 +12,7 @@ namespace jasonmccallister\hasura\controllers;
 
 use Craft;
 use craft\web\Controller;
-use jasonmccallister\hasura\Encoder;
 use jasonmccallister\hasura\events\HasuraEvent;
-use function GuzzleHttp\json_decode;
 
 /**
  * Webhook Controller
