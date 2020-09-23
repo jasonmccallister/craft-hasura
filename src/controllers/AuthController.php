@@ -76,7 +76,7 @@ class AuthController extends Controller
         $password = Craft::$app->getRequest()->getRequiredBodyParam('password');
         $user = Craft::$app->getUsers()->getUserByUsernameOrEmail($loginName);
 
-        if (!$user->authenticate($password)) {
+        if (!$user || !$user->authenticate($password)) {
             return $this->asErrorJson('Unable to authenticate the user');
         }
 
