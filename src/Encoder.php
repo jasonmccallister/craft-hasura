@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hasura plugin for Craft CMS 3.x
  *
@@ -35,6 +36,15 @@ class Encoder
         $iat = time();
         $exp = $iat + $duration;
 
+        $customClaim = [];
+        try {
+            $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
+            $customClaim = Json::decodeIfJson(Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement]));
+        } catch (\Exception $e) {
+            Craft::error('Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').', __METHOD__);
+        }
+
+
         $token = [
             'sub' => $user->uid,
             'admin' => $user->admin ?? false,
@@ -44,6 +54,7 @@ class Encoder
                 'x-hasura-allowed-roles' => $roles,
                 'x-hasura-default-role' => $default,
                 'x-hasura-user-id' => $user->uid,
+                'x-hasura-custom-claim' => $customClaim,
             ]
         ];
 

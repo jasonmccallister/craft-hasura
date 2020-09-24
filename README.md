@@ -97,3 +97,39 @@ The event contains the following:
 - payload: The payload of the event, which is [contains the new and old data](https://docs.hasura.io/1.0/graphql/manual/event-triggers/payload.html#json-payload) (based on the trigger type)
 
 Brought to you by [Jason McCallister](https://mccallister.io)
+
+## Add Custom Claims via Twig field in Plugin Settings
+
+You can add custom claims (for example the users name or a custom field) to the JWT token via the new Custom Claims field in the Plugin settings.
+You can add any additional information as well as user specific details as he field accepts the `user` variable. In Hasura you are then able to write rules based on the `x-hasura-custom-claim` object.
+
+### Example twig query
+
+```twig
+{% set customCategory = user.customCategory.one() %}
+{% if customCategory %}
+  {% set jsonObject = { "uid": customCategory, "title": customCategory, "slug": customCategory } %}
+  {{ jsonObject |json_encode() }}
+{% endif %}
+```
+
+### Example JWT
+
+```json
+{
+  "sub": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+  "admin": true,
+  "iat": 1553079269,
+  "exp": 1553082869,
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-allowed-roles": ["user", "admin"],
+    "x-hasura-default-role": "admin",
+    "x-hasura-user-id": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+    "x-hasura-custom-claim": {
+      "uid": "071cd618-e675-4bcc-b362-0311b43333c9",
+      "title": "Category Name",
+      "slug": "category-name"
+    }
+  }
+}
+```
