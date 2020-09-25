@@ -30,7 +30,7 @@ class Encoder
         $defaultRole = $settings->defaultRole;
         $namespace = $settings->claimsNamespace;
 
-        $default = $user->admin ? 'admin' : $defaultRole;
+        $default = $user->admin ? 'admin' : (!empty($roles) ? end($roles) : $defaultRole);
 
         $iat = time();
         $exp = $iat + $duration;
