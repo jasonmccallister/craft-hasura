@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Add ability to write custom claims via twig
+- Add default role to userGroup if available
 
 ## 1.1.0 - 2019-05-24
 
