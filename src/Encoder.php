@@ -36,15 +36,6 @@ class Encoder
         $iat = time();
         $exp = $iat + $duration;
 
-        $customClaim = [];
-        try {
-            $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
-            $customClaim = Json::decodeIfJson(Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement]));
-        } catch (\Exception $e) {
-            Craft::error('Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').', __METHOD__);
-        }
-
-
         $token = [
             'sub' => $user->uid,
             'admin' => $user->admin ?? false,
@@ -54,9 +45,22 @@ class Encoder
                 'x-hasura-allowed-roles' => $roles,
                 'x-hasura-default-role' => $default,
                 'x-hasura-user-id' => $user->uid,
-                'x-hasura-custom-claim' => $customClaim,
             ]
         ];
+
+        $customClaims = null;
+        try {
+            $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
+            $customClaims = Json::decodeIfJson(Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement]));
+        } catch (\Exception $e) {
+            Craft::error('Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').', __METHOD__);
+        }
+        if (is_array($customClaims)) {
+            $customClaims = self::mapKeys($customClaims);
+            $token[$namespace] = array_merge($token[$namespace], $customClaims);
+        } else if (is_string($customClaims)) {
+            $token[$namespace]['x-hasura-custom-claim'] =  $customClaims;
+        }
 
         return self::sign($token);
     }
@@ -96,5 +100,22 @@ class Encoder
             Hasura::$plugin->settings->signingKey,
             Hasura::$plugin->settings->signingMethod
         );
+    }
+
+    /**
+     * Helper function to create multiple custom claims as Hasura is not allowing arrays/objects, only string
+     * 
+     * Issue is tracked here: https://github.com/hasura/graphql-engine/issues/1902
+     *
+     * @param array $customClaims
+     * @return void
+     */
+    protected static function mapKeys(array $customClaims)
+    {
+        foreach ($customClaims as $key => $value) {
+            $customClaims['x-hasura-custom-' . $key] = $value;
+            unset($customClaims[$key]);
+        }
+        return $customClaims;
     }
 }
