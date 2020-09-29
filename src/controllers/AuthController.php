@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hasura plugin for Craft CMS 3.x
  *
@@ -58,7 +59,7 @@ class AuthController extends Controller
         if ($action->id === 'index') {
             $this->enableCsrfValidation = \jasonmccallister\hasura\Hasura::$plugin->getSettings()->requireCsrfToken;
         }
-        
+
         if (Craft::$app->getRequest()->isOptions) {
             Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Origin', '*');
             Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Headers', "X-Requested-With, Authorization, Content-Type, Request-Method");
