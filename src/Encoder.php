@@ -11,8 +11,12 @@
 
 namespace jasonmccallister\hasura;
 
+use Craft;
 use Firebase\JWT\JWT;
 use craft\elements\User;
+use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
+use phpDocumentor\Reflection\Types\Mixed_;
 
 class Encoder
 {
@@ -61,6 +65,7 @@ class Encoder
         } else if (is_string($customClaims)) {
             $token[$namespace]['x-hasura-custom-claim'] =  $customClaims;
         }
+
 
         return self::sign($token);
     }
