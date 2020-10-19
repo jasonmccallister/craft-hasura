@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hasura plugin for Craft CMS 3.x
  *
@@ -47,6 +48,20 @@ class Encoder
             ]
         ];
 
+        $customClaims = null;
+        try {
+            $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
+            $customClaims = Json::decodeIfJson(Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement]));
+        } catch (\Exception $e) {
+            Craft::error('Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').', __METHOD__);
+        }
+        if (is_array($customClaims)) {
+            $customClaims = self::mapKeys($customClaims);
+            $token[$namespace] = array_merge($token[$namespace], $customClaims);
+        } else if (is_string($customClaims)) {
+            $token[$namespace]['x-hasura-custom-claim'] =  $customClaims;
+        }
+
         return self::sign($token);
     }
 
@@ -85,5 +100,22 @@ class Encoder
             Hasura::$plugin->settings->signingKey,
             Hasura::$plugin->settings->signingMethod
         );
+    }
+
+    /**
+     * Helper function to create multiple custom claims as Hasura is not allowing arrays/objects, only string
+     * 
+     * Issue is tracked here: https://github.com/hasura/graphql-engine/issues/1902
+     *
+     * @param array $customClaims
+     * @return void
+     */
+    protected static function mapKeys(array $customClaims)
+    {
+        foreach ($customClaims as $key => $value) {
+            $customClaims['x-hasura-custom-' . $key] = $value;
+            unset($customClaims[$key]);
+        }
+        return $customClaims;
     }
 }

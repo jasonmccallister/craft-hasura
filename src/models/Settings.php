@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Hasura plugin for Craft CMS 3.x
  *
@@ -38,6 +39,13 @@ class Settings extends Model
      * @var string
      */
     public $claimsNamespace = 'https://hasura.io/jwt/claims';
+
+    /**
+     * Twig string to be parsed on include
+     *
+     * @var string
+     */
+    public $fieldTwig = '';
 
     /**
      * require CSRF token model attribute

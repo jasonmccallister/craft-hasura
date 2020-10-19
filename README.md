@@ -97,3 +97,65 @@ The event contains the following:
 - payload: The payload of the event, which is [contains the new and old data](https://docs.hasura.io/1.0/graphql/manual/event-triggers/payload.html#json-payload) (based on the trigger type)
 
 Brought to you by [Jason McCallister](https://mccallister.io)
+
+## Add Custom Claims via Twig field in Plugin Settings
+
+You can add custom claims (for example the users name or a custom field) to the JWT token via the new Custom Claims field in the Plugin settings.
+You can add any additional information as well as user specific details as he field accepts the `user` variable. In Hasura you are then able to write rules based on the `x-hasura-custom-claim` object.
+
+### Example twig query
+
+```twig
+{{user.fullName}}
+```
+
+### Example JWT
+
+```json
+{
+  "sub": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+  "admin": true,
+  "iat": 1553079269,
+  "exp": 1553082869,
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-allowed-roles": ["user", "admin"],
+    "x-hasura-default-role": "admin",
+    "x-hasura-user-id": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+    "x-hasura-custom-claim": "John Doe"
+  }
+}
+```
+
+## Current limitation for custom claim arrays
+
+As Hasura only accepts custom claims to be strings we need to unwrap arrays and add them as single claims. The plugin does this for you but only on the first level. Recursive mapping will be added later. More infos can be found here: https://github.com/hasura/graphql-engine/issues/1902
+
+### Example twig query returning an object/array
+
+```twig
+{% set customCategory = user.customCategory.one() %}
+{% if customCategory %}
+  {% set jsonObject = { "user-name": user.fullName, "category-uid": customCategory, "category-title": customCategory, "category-slug": customCategory } %}
+  {{ jsonObject | json_encode() }}
+{% endif %}
+```
+
+### Example JWT
+
+```json
+{
+  "sub": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+  "admin": true,
+  "iat": 1553079269,
+  "exp": 1553082869,
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-allowed-roles": ["user", "admin"],
+    "x-hasura-default-role": "admin",
+    "x-hasura-user-id": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+    "x-hasura-custom-user-name": "John Doe",
+    "x-hasura-custom-category-uid": "071cd618-e675-4bcc-b362-0311b43333c9",
+    "x-hasura-custom-category-title": "Category Name",
+    "x-hasura-custom-category-slug": "category-name"
+  }
+}
+```
