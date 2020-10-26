@@ -1,31 +1,11 @@
 <?php
 
-/**
- * Hasura plugin for Craft CMS 3.x
- *
- * Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
- *
- * @link      https://mccallister.io
- * @copyright Copyright (c) 2019 Jason McCallister
- */
-
 namespace jasonmccallister\hasura\models;
 
-use jasonmccallister\hasura\Hasura;
-
-use Craft;
 use craft\base\Model;
 
-/**
- * @author    Jason McCallister
- * @package   Hasura
- * @since     1.0.0
- */
 class Settings extends Model
 {
-    // Public Properties
-    // =========================================================================
-
     /**
      * default role model attribute
      *
