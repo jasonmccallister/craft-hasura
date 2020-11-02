@@ -2,12 +2,12 @@
 
 namespace jasonmccallister\hasura;
 
-use jasonmccallister\hasura\models\Settings;
-
 use Craft;
+use craft\base\Model;
 use craft\base\Plugin;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
+use jasonmccallister\hasura\models\Settings;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError as TwigRuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
@@ -71,7 +71,7 @@ class Hasura extends Plugin
     /**
      * Creates and returns the model used to store the plugin’s settings.
      *
-     * @return \craft\base\Model|null
+     * @return Model|null
      */
     protected function createSettingsModel()
     {
@@ -88,11 +88,6 @@ class Hasura extends Plugin
      */
     protected function settingsHtml(): string
     {
-        return Craft::$app->view->renderTemplate(
-            'hasura/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
+        return Craft::$app->view->renderTemplate('hasura/settings', ['settings' => $this->getSettings()]);
     }
 }
