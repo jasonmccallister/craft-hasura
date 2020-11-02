@@ -1,19 +1,8 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
-{#
-/**
- * Hasura plugin for Craft CMS 3.x
- *
- * Hasura Settings.twig
- *
- * @author    Jason McCallister
- * @copyright Copyright (c) 2019 Jason McCallister
- * @link      https://mccallister.io
- * @package   Hasura
- * @since     1.0.0
- */
-#}
 {% import "_includes/forms" as forms %}
+
 {% do view.registerAssetBundle("jasonmccallister\\hasura\\assetbundles\\hasura\\HasuraAsset") %}
+
 {% set signingMethodOptions = {
     HS256: 'HS256',
     HS384: 'HS384',
@@ -22,18 +11,18 @@
     RS384: 'RS384',
     RS512: 'RS512'
 } %}
-    <h2>
-General Settings
-</h2>
-    <p class="note"> These settings you should change. However, we are setting some sensible defaults to reduce configuration.</p>
+
+<h2>General Settings</h2>
+
+<p style="color: rgb(143, 152, 163); padding-left: 20px;"> These settings you should change. However, we are setting
+    some sensible defaults to reduce configuration.</p>
 
 {{ forms.textField({
     label: 'Default Role',
     instructions: 'The default role that should be assigned when signing tokens.',
     id: 'defaultRole',
     name: 'defaultRole',
-    value: settings['defaultRole']})
-}}
+    value: settings['defaultRole']}) }}
 
 {{ forms.checkboxField({
     label: 'Require CSRF Tokens',
@@ -41,13 +30,13 @@ General Settings
     id: 'requireCsrfToken',
     name: 'requireCsrfToken',
     checked: settings['requireCsrfToken'],
-    value: settings['requireCsrfToken'] ? 'on' : 'off'})
-}}
+    value: settings['requireCsrfToken'] ? 'on' : 'off'}) }}
 
 <hr>
 
 <h2>JSON Web Token (JWT) Settings</h2>
-<p class="note">By default, HMAC is selected to sign the JWT.</p>
+
+<p style="color: rgb(143, 152, 163); padding-left: 20px;">By default, HMAC is selected to sign the JWT.</p>
 
 {{ forms.selectField({
     label: "Signing Method",
@@ -55,8 +44,7 @@ General Settings
     id: 'signingMethod',
     name: 'signingMethod',
     value: settings.signingMethod,
-    options: signingMethodOptions
-}) }}
+    options: signingMethodOptions}) }}
 
 {{ forms.textareaField({
     label: "Signing Key",
@@ -64,17 +52,16 @@ General Settings
     id: 'signingKey',
     name: 'signingKey',
     rows: 15,
-    value: settings.signingKey,
-}) }}
+    value: settings.signingKey}) }}
 
 <hr>
 
 <h2>Webhook Settings</h2>
-<p class="note">
-    You can configure the Hasura API to send event triggers to your Craft installation. This is useful when you need to perform specific events based on table. This will fire a
-    <em>HasuraEvent</em>
-    within the CMS. The payload is defined in the
-    <a href="https://docs.hasura.io/1.0/graphql/manual/event-triggers/payload.html">Hasura docs</a>.
+
+<p style="color: rgb(143, 152, 163); padding-left: 20px;">
+    You can configure the Hasura API to send event triggers to your Craft installation. This is useful when you need to
+    perform specific events based on table. This will fire a <em>HasuraEvent</em> within the CMS. The payload is defined
+    in the <a href="https://docs.hasura.io/1.0/graphql/manual/event-triggers/payload.html">Hasura docs</a>.
 </p>
 
 {{ forms.textField({
@@ -82,29 +69,30 @@ General Settings
     instructions: 'The header that will contain the webhook key',
     id: 'webhookHeader',
     name: 'webhookHeader',
-    value: settings['webhookHeader']})
-}}
+    value: settings['webhookHeader']}) }}
 
 {{ forms.textField({
     label: 'Webhook Key',
     instructions: 'The key used to validate incoming requests to /hasura/webhook',
     id: 'webhookKey',
     name: 'webhookKey',
-    value: settings['webhookKey']})
-}}
+    value: settings['webhookKey']}) }}
 
 <hr>
 
 <h2>Additional Settings</h2>
-<p class="note">These settings you whould not have to change, but are provided in the event you need to customize the JWT further. These are defaults to what Hasura GraphQL Engine expects.</p>
+
+<p style="color: rgb(143, 152, 163); padding-left: 20px;">
+    These settings you would not have to change, but are provided
+    in the event you need to customize the JWT further. These are defaults to what Hasura GraphQL Engine expects.
+</p>
 
 {{ forms.textField({
     label: 'Claims Namespace',
     instructions: 'The claims namespace that should be assigned when signing tokens.',
     id: 'claimsNamespace',
     name: 'claimsNamespace',
-    value: settings['claimsNamespace']})
-}}
+    value: settings['claimsNamespace']}) }}
 
 {{ forms.textareaField( {
     label: "Custom Claims"|t,
@@ -113,5 +101,4 @@ General Settings
     name: 'fieldTwig',
     value: settings['fieldTwig'],
     class: 'code',
-    rows: 10
-}) }}
+    rows: 10}) }}
