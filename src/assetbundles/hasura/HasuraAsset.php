@@ -22,10 +22,6 @@ class HasuraAsset extends AssetBundle
 
         // define the relative path to CSS/JS files that should be registered with the page
         // when this asset bundle is registered
-        $this->js = [
-            'js/Hasura.js',
-        ];
-
         $this->css = [
             'css/Hasura.css',
         ];

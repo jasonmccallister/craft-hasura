@@ -6,11 +6,13 @@ use jasonmccallister\hasura\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
+use Twig\Error\LoaderError as TwigLoaderError;
+use Twig\Error\RuntimeError as TwigRuntimeError;
+use Twig\Error\SyntaxError as TwigSyntaxError;
 use yii\base\Event;
+use yii\base\Exception;
 
 class Hasura extends Plugin
 {
@@ -43,6 +45,7 @@ class Hasura extends Plugin
     public function init()
     {
         parent::init();
+
         self::$plugin = $this;
 
         // Register our site routes
@@ -52,17 +55,6 @@ class Hasura extends Plugin
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['hasura/auth'] = 'hasura/auth';
                 $event->rules['hasura/webhook'] = 'hasura/webhook';
-            }
-        );
-
-        // Do something after we're installed
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // We were just installed
-                }
             }
         );
 
@@ -91,6 +83,8 @@ class Hasura extends Plugin
      * block on the settings page.
      *
      * @return string The rendered settings HTML
+     * @throws
+     * @throws TwigLoaderError|TwigRuntimeError|TwigSyntaxError|Exception
      */
     protected function settingsHtml(): string
     {

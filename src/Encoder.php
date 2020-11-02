@@ -17,7 +17,7 @@ class Encoder
      */
     public static function encode(User $user, int $duration): string
     {
-        $roles = self::getUserRoles($user);
+        $roles = self::getRolesFor($user);
         $settings = Hasura::$plugin->getSettings();
         $defaultRole = $settings->defaultRole;
         $namespace = $settings->claimsNamespace;
@@ -42,15 +42,23 @@ class Encoder
         $customClaims = null;
         try {
             $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
-            $customClaims = Json::decodeIfJson(Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement]));
+            $customClaims = Json::decodeIfJson(
+                Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement])
+            );
         } catch (\Exception $e) {
-            Craft::error('Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').', __METHOD__);
+            Craft::error(
+                'Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').',
+                __METHOD__
+            );
         }
+
         if (is_array($customClaims)) {
             $customClaims = self::mapKeys($customClaims);
             $token[$namespace] = array_merge($token[$namespace], $customClaims);
-        } else if (is_string($customClaims)) {
-            $token[$namespace]['x-hasura-custom-claim'] =  $customClaims;
+        } else {
+            if (is_string($customClaims)) {
+                $token[$namespace]['x-hasura-custom-claim'] = $customClaims;
+            }
         }
 
         return self::sign($token);
@@ -63,7 +71,7 @@ class Encoder
      *
      * @return array
      */
-    protected static function getUserRoles(User $user): array
+    protected static function getRolesFor(User $user): array
     {
         $roles = $user->groups ? array_column(
             $user->groups,
@@ -86,27 +94,24 @@ class Encoder
      */
     protected static function sign(array $token): string
     {
-        return JWT::encode(
-            $token,
-            Hasura::$plugin->settings->signingKey,
-            Hasura::$plugin->settings->signingMethod
-        );
+        return JWT::encode($token, Hasura::$plugin->settings->signingKey, Hasura::$plugin->settings->signingMethod);
     }
 
     /**
      * Helper function to create multiple custom claims as Hasura is not allowing arrays/objects, only string
-     * 
+     *
      * Issue is tracked here: https://github.com/hasura/graphql-engine/issues/1902
      *
      * @param array $customClaims
-     * @return void
+     * @return array
      */
-    protected static function mapKeys(array $customClaims)
+    protected static function mapKeys(array $customClaims): array
     {
         foreach ($customClaims as $key => $value) {
             $customClaims['x-hasura-custom-' . $key] = $value;
             unset($customClaims[$key]);
         }
+
         return $customClaims;
     }
 }
