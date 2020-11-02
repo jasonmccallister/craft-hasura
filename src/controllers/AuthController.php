@@ -5,6 +5,8 @@ namespace jasonmccallister\hasura\controllers;
 use Craft;
 use craft\web\Controller;
 use jasonmccallister\hasura\Encoder;
+use jasonmccallister\hasura\Hasura;
+use yii\web\BadRequestHttpException;
 
 class AuthController extends Controller
 {
@@ -22,12 +24,15 @@ class AuthController extends Controller
     {
         // Don't enable CSRF validation for auth requests
         if ($action->id === 'index') {
-            $this->enableCsrfValidation = \jasonmccallister\hasura\Hasura::$plugin->getSettings()->requireCsrfToken;
+            $this->enableCsrfValidation = Hasura::$plugin->getSettings()->requireCsrfToken;
         }
 
         if (Craft::$app->getRequest()->isOptions) {
             Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Origin', '*');
-            Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Headers', "X-Requested-With, Authorization, Content-Type, Request-Method");
+            Craft::$app->getResponse()->getHeaders()->set(
+                'Access-Control-Allow-Headers',
+                "X-Requested-With, Authorization, Content-Type, Request-Method"
+            );
             Craft::$app->end();
         }
 
@@ -39,6 +44,7 @@ class AuthController extends Controller
      * e.g.: actions/hasura/auth
      *
      * @return mixed
+     * @throws BadRequestHttpException
      */
     public function actionIndex()
     {
@@ -52,10 +58,10 @@ class AuthController extends Controller
             return $this->asErrorJson('Unable to authenticate the user');
         }
 
-        $generalConfig = Craft::$app->getConfig()->getGeneral();
-
-        $token = Encoder::encode($user, $generalConfig->userSessionDuration);
-
-        return $this->asJson(['token' => $token]);
+        return $this->asJson(
+            [
+                'token' => Encoder::encode($user, Craft::$app->getConfig()->getGeneral()->userSessionDuration),
+            ]
+        );
     }
 }
