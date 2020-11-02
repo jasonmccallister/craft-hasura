@@ -38,7 +38,7 @@
     "handle": "hasura",
     "hasCpSettings": true,
     "hasCpSection": false,
-    "changelogUrl": "https://raw.githubusercontent.com/jasonmccallister/hasura/master/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/jasonmccallister/craft-hasura/master/CHANGELOG.md",
     "class": "jasonmccallister\\hasura\\Hasura"
   }
 }

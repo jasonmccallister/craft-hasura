@@ -6,7 +6,7 @@ Use your Craft CMS credentials to authenticate with a GraphQL API powered by Has
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.5.0 or later.
 
 ## Installation
 
