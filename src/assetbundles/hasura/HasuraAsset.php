@@ -30,7 +30,7 @@ class HasuraAsset extends AssetBundle
     public function init()
     {
         // define the path that your publishable resources live
-        $this->sourcePath = "@jasonmccallister/hasura/assetbundles/hasura/dist";
+        $this->sourcePath = "@jasonmccallister/Hasura/assetbundles/hasura/dist";
 
         // define the dependencies
         $this->depends = [
