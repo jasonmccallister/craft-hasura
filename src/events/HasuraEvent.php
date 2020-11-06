@@ -1,6 +1,6 @@
 <?php
 
-namespace jasonmccallister\hasura\events;
+namespace jasonmccallister\Hasura\events;
 
 use yii\base\Event;
 

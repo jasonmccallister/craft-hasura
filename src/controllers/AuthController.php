@@ -9,11 +9,11 @@
  * @copyright Copyright (c) 2019 Jason McCallister
  */
 
-namespace jasonmccallister\hasura\controllers;
+namespace jasonmccallister\Hasura\controllers;
 
 use Craft;
 use craft\web\Controller;
-use jasonmccallister\hasura\Encoder;
+use jasonmccallister\Hasura\Encoder;
 
 /**
  * Auth Controller

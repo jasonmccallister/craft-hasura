@@ -8,11 +8,11 @@
  * @copyright Copyright (c) 2019 Jason McCallister
  */
 
-namespace jasonmccallister\hasura\controllers;
+namespace jasonmccallister\Hasura\controllers;
 
 use Craft;
 use craft\web\Controller;
-use jasonmccallister\hasura\events\HasuraEvent;
+use jasonmccallister\Hasura\events\HasuraEvent;
 
 /**
  * Webhook Controller

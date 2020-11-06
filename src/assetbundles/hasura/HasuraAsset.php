@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2019 Jason McCallister
  */
 
-namespace jasonmccallister\hasura\assetbundles\Hasura;
+namespace jasonmccallister\Hasura\assetbundles\Hasura;
 
 use Craft;
 use craft\web\AssetBundle;

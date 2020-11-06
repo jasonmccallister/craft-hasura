@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2019 Jason McCallister
  */
 
-namespace jasonmccallister\hasura;
+namespace jasonmccallister\Hasura;
 
 use Craft;
 use Firebase\JWT\JWT;

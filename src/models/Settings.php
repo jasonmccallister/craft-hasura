@@ -9,9 +9,9 @@
  * @copyright Copyright (c) 2019 Jason McCallister
  */
 
-namespace jasonmccallister\hasura\models;
+namespace jasonmccallister\Hasura\models;
 
-use jasonmccallister\hasura\Hasura;
+use jasonmccallister\Hasura\Hasura;
 
 use Craft;
 use craft\base\Model;
