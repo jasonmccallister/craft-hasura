@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2019 Jason McCallister
  */
 
-namespace jasonmccallister\hasura;
+namespace jasonmccallister\Hasura;
 
-use jasonmccallister\hasura\models\Settings;
+use jasonmccallister\Hasura\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
