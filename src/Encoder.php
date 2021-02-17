@@ -1,14 +1,5 @@
 <?php
 
-/**
- * Hasura plugin for Craft CMS 3.x
- *
- * Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
- *
- * @link      https://mccallister.io
- * @copyright Copyright (c) 2019 Jason McCallister
- */
-
 namespace jasonmccallister\hasura;
 
 use Firebase\JWT\JWT;
@@ -26,24 +17,15 @@ class Encoder
      */
     public static function encode(User $user, int $duration): string
     {
-        $roles = self::getUserRoles($user);
+        $roles = self::getRolesFor($user);
         $settings = Hasura::$plugin->getSettings();
         $defaultRole = $settings->defaultRole;
         $namespace = $settings->claimsNamespace;
 
-        $default = $user->admin ? 'admin' : $defaultRole;
+        $default = $user->admin ? 'admin' : (!empty($roles) ? end($roles) : $defaultRole);
 
         $iat = time();
         $exp = $iat + $duration;
-
-        $customClaim = [];
-        try {
-            $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
-            $customClaim = Json::decodeIfJson(Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement]));
-        } catch (\Exception $e) {
-            Craft::error('Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').', __METHOD__);
-        }
-
 
         $token = [
             'sub' => $user->uid,
@@ -54,9 +36,30 @@ class Encoder
                 'x-hasura-allowed-roles' => $roles,
                 'x-hasura-default-role' => $default,
                 'x-hasura-user-id' => $user->uid,
-                'x-hasura-custom-claim' => $customClaim,
             ]
         ];
+
+        $customClaims = null;
+        try {
+            $userElement = Craft::$app->getUsers()->getUserByUid($user->uid);
+            $customClaims = Json::decodeIfJson(
+                Craft::$app->view->renderString($settings->fieldTwig, ['user' => $userElement])
+            );
+        } catch (\Exception $e) {
+            Craft::error(
+                'Couldn’t render custom claim for user with id “' . $user->id . ' (' . $e->getMessage() . ').',
+                __METHOD__
+            );
+        }
+
+        if (is_array($customClaims)) {
+            $customClaims = self::mapKeys($customClaims);
+            $token[$namespace] = array_merge($token[$namespace], $customClaims);
+        } else {
+            if (is_string($customClaims)) {
+                $token[$namespace]['x-hasura-custom-claim'] = $customClaims;
+            }
+        }
 
         return self::sign($token);
     }
@@ -68,7 +71,7 @@ class Encoder
      *
      * @return array
      */
-    protected static function getUserRoles(User $user): array
+    protected static function getRolesFor(User $user): array
     {
         $roles = $user->groups ? array_column(
             $user->groups,
@@ -91,10 +94,24 @@ class Encoder
      */
     protected static function sign(array $token): string
     {
-        return JWT::encode(
-            $token,
-            Hasura::$plugin->settings->signingKey,
-            Hasura::$plugin->settings->signingMethod
-        );
+        return JWT::encode($token, Hasura::$plugin->settings->signingKey, Hasura::$plugin->settings->signingMethod);
+    }
+
+    /**
+     * Helper function to create multiple custom claims as Hasura is not allowing arrays/objects, only string
+     *
+     * Issue is tracked here: https://github.com/hasura/graphql-engine/issues/1902
+     *
+     * @param array $customClaims
+     * @return array
+     */
+    protected static function mapKeys(array $customClaims): array
+    {
+        foreach ($customClaims as $key => $value) {
+            $customClaims['x-hasura-custom-' . $key] = $value;
+            unset($customClaims[$key]);
+        }
+
+        return $customClaims;
     }
 }

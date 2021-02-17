@@ -1,53 +1,21 @@
 <?php
-/**
- * Hasura plugin for Craft CMS 3.x
- *
- * Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
- *
- * @link      https://mccallister.io
- * @copyright Copyright (c) 2019 Jason McCallister
- */
 
 namespace jasonmccallister\hasura\controllers;
 
 use Craft;
 use craft\web\Controller;
 use jasonmccallister\hasura\Encoder;
+use jasonmccallister\hasura\Hasura;
+use yii\web\BadRequestHttpException;
 
-/**
- * Auth Controller
- *
- * Generally speaking, controllers are the middlemen between the front end of
- * the CP/website and your plugin’s services. They contain action methods which
- * handle individual tasks.
- *
- * A common pattern used throughout Craft involves a controller action gathering
- * post data, saving it on a model, passing the model off to a service, and then
- * responding to the request appropriately depending on the service method’s response.
- *
- * Action methods begin with the prefix “action”, followed by a description of what
- * the method does (for example, actionSaveIngredient()).
- *
- * https://craftcms.com/docs/plugins/controllers
- *
- * @author    Jason McCallister
- * @package   Hasura
- * @since     1.0.0
- */
 class AuthController extends Controller
 {
-    // Protected Properties
-    // =========================================================================
-
     /**
      * @var    bool|array Allows anonymous access to this controller's actions.
      *         The actions must be in 'kebab-case'
      * @access protected
      */
     protected $allowAnonymous = ['index'];
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * @inheritdoc
@@ -56,7 +24,16 @@ class AuthController extends Controller
     {
         // Don't enable CSRF validation for auth requests
         if ($action->id === 'index') {
-            $this->enableCsrfValidation = \jasonmccallister\hasura\Hasura::$plugin->getSettings()->requireCsrfToken;
+            $this->enableCsrfValidation = Hasura::$plugin->getSettings()->requireCsrfToken;
+        }
+
+        if (Craft::$app->getRequest()->isOptions) {
+            Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Origin', '*');
+            Craft::$app->getResponse()->getHeaders()->set(
+                'Access-Control-Allow-Headers',
+                "X-Requested-With, Authorization, Content-Type, Request-Method"
+            );
+            Craft::$app->end();
         }
         
         if (Craft::$app->getRequest()->isOptions) {
@@ -73,6 +50,7 @@ class AuthController extends Controller
      * e.g.: actions/hasura/auth
      *
      * @return mixed
+     * @throws BadRequestHttpException
      */
     public function actionIndex()
     {
@@ -86,10 +64,10 @@ class AuthController extends Controller
             return $this->asErrorJson('Unable to authenticate the user');
         }
 
-        $generalConfig = Craft::$app->getConfig()->getGeneral();
-
-        $token = Encoder::encode($user, $generalConfig->userSessionDuration);
-
-        return $this->asJson(['token' => $token]);
+        return $this->asJson(
+            [
+                'token' => Encoder::encode($user, Craft::$app->getConfig()->getGeneral()->userSessionDuration),
+            ]
+        );
     }
 }

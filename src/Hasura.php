@@ -1,39 +1,21 @@
 <?php
-/**
- * Hasura plugin for Craft CMS 3.x
- *
- * Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io
- *
- * @link      https://mccallister.io
- * @copyright Copyright (c) 2019 Jason McCallister
- */
 
 namespace jasonmccallister\hasura;
 
-use jasonmccallister\hasura\models\Settings;
-
 use Craft;
+use craft\base\Model;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
-
+use jasonmccallister\hasura\models\Settings;
+use Twig\Error\LoaderError as TwigLoaderError;
+use Twig\Error\RuntimeError as TwigRuntimeError;
+use Twig\Error\SyntaxError as TwigSyntaxError;
 use yii\base\Event;
+use yii\base\Exception;
 
-/**
- * @author    Jason McCallister
- * @package   Hasura
- * @since     1.0.0
- *
- * @property  Settings $settings
- * @method    Settings getSettings()
- */
 class Hasura extends Plugin
 {
-    // Static Properties
-    // =========================================================================
-
     /**
      * Static property that is an instance of this plugin class so that it can be accessed via
      * Hasura::$plugin
@@ -42,18 +24,12 @@ class Hasura extends Plugin
      */
     public static $plugin;
 
-    // Public Properties
-    // =========================================================================
-
     /**
      * To execute your plugin’s migrations, you’ll need to increase its schema version.
      *
      * @var string
      */
     public $schemaVersion = '1.1.0';
-
-    // Public Methods
-    // =========================================================================
 
     /**
      * Set our $plugin static property to this class so that it can be accessed via
@@ -69,6 +45,7 @@ class Hasura extends Plugin
     public function init()
     {
         parent::init();
+
         self::$plugin = $this;
 
         // Register our site routes
@@ -78,17 +55,6 @@ class Hasura extends Plugin
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['hasura/auth'] = 'hasura/auth';
                 $event->rules['hasura/webhook'] = 'hasura/webhook';
-            }
-        );
-
-        // Do something after we're installed
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // We were just installed
-                }
             }
         );
 
@@ -102,13 +68,10 @@ class Hasura extends Plugin
         );
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * Creates and returns the model used to store the plugin’s settings.
      *
-     * @return \craft\base\Model|null
+     * @return Model|null
      */
     protected function createSettingsModel()
     {
@@ -120,14 +83,11 @@ class Hasura extends Plugin
      * block on the settings page.
      *
      * @return string The rendered settings HTML
+     * @throws
+     * @throws TwigLoaderError|TwigRuntimeError|TwigSyntaxError|Exception
      */
     protected function settingsHtml(): string
     {
-        return Craft::$app->view->renderTemplate(
-            'hasura/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
+        return Craft::$app->view->renderTemplate('hasura/settings', ['settings' => $this->getSettings()]);
     }
 }

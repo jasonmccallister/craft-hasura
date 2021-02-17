@@ -6,7 +6,7 @@ Use your Craft CMS credentials to authenticate with a GraphQL API powered by Has
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.5.0 or later.
 
 ## Installation
 
@@ -106,10 +106,37 @@ You can add any additional information as well as user specific details as he fi
 ### Example twig query
 
 ```twig
+{{user.fullName}}
+```
+
+### Example JWT
+
+```json
+{
+  "sub": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+  "admin": true,
+  "iat": 1553079269,
+  "exp": 1553082869,
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-allowed-roles": ["user", "admin"],
+    "x-hasura-default-role": "admin",
+    "x-hasura-user-id": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
+    "x-hasura-custom-claim": "John Doe"
+  }
+}
+```
+
+## Current limitation for custom claim arrays
+
+As Hasura only accepts custom claims to be strings we need to unwrap arrays and add them as single claims. The plugin does this for you but only on the first level. Recursive mapping will be added later. More infos can be found here: https://github.com/hasura/graphql-engine/issues/1902
+
+### Example twig query returning an object/array
+
+```twig
 {% set customCategory = user.customCategory.one() %}
 {% if customCategory %}
-  {% set jsonObject = { "uid": customCategory, "title": customCategory, "slug": customCategory } %}
-  {{ jsonObject |json_encode() }}
+  {% set jsonObject = { "user-name": user.fullName, "category-uid": customCategory, "category-title": customCategory, "category-slug": customCategory } %}
+  {{ jsonObject | json_encode() }}
 {% endif %}
 ```
 
@@ -125,11 +152,10 @@ You can add any additional information as well as user specific details as he fi
     "x-hasura-allowed-roles": ["user", "admin"],
     "x-hasura-default-role": "admin",
     "x-hasura-user-id": "04fc4392-02ce-4718-bd93-788c1b5e55f4",
-    "x-hasura-custom-claim": {
-      "uid": "071cd618-e675-4bcc-b362-0311b43333c9",
-      "title": "Category Name",
-      "slug": "category-name"
-    }
+    "x-hasura-custom-user-name": "John Doe",
+    "x-hasura-custom-category-uid": "071cd618-e675-4bcc-b362-0311b43333c9",
+    "x-hasura-custom-category-title": "Category Name",
+    "x-hasura-custom-category-slug": "category-name"
   }
 }
 ```

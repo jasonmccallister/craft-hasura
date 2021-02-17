@@ -2,7 +2,6 @@
   "name": "jasonmccallister/hasura",
   "description": "Use your Craft CMS credentials to authenticate with a GraphQL API powered by Hasura.io",
   "type": "craft-plugin",
-  "version": "1.1.0",
   "keywords": [
     "craft",
     "cms",
@@ -26,8 +25,9 @@
     }
   ],
   "require": {
-    "craftcms/cms": "^3.0.0-RC1",
-    "firebase/php-jwt": "^5.0"
+    "craftcms/cms": "^3.5.0",
+    "firebase/php-jwt": "^5.0",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
@@ -39,7 +39,7 @@
     "handle": "hasura",
     "hasCpSettings": true,
     "hasCpSection": false,
-    "changelogUrl": "https://raw.githubusercontent.com/jasonmccallister/hasura/master/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/jasonmccallister/craft-hasura/master/CHANGELOG.md",
     "class": "jasonmccallister\\hasura\\Hasura"
   }
 }
