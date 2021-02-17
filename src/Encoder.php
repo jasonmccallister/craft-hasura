@@ -2,8 +2,10 @@
 
 namespace jasonmccallister\hasura;
 
+use Craft;
 use Firebase\JWT\JWT;
 use craft\elements\User;
+use craft\helpers\Json;
 
 class Encoder
 {

@@ -35,6 +35,12 @@ class AuthController extends Controller
             );
             Craft::$app->end();
         }
+        
+        if (Craft::$app->getRequest()->isOptions) {
+            Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Origin', '*');
+            Craft::$app->getResponse()->getHeaders()->set('Access-Control-Allow-Headers', "X-Requested-With, Authorization, Content-Type, Request-Method");
+            Craft::$app->end();
+        }
 
         return parent::beforeAction($action);
     }
